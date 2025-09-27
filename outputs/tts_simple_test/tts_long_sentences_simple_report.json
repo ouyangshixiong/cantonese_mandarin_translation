@@ -1,0 +1,414 @@
+{
+  "test_summary": {
+    "total_tests": 20,
+    "successful_tests": 20,
+    "failed_tests": 0,
+    "success_rate": 1.0,
+    "test_timestamp": "2025-09-27 15:00:35",
+    "test_type": "简化版TTS长句测试"
+  },
+  "performance_metrics": {
+    "avg_translation_time": 1.430511474609375e-06,
+    "avg_synthesis_time": 0.6439999999999999,
+    "avg_total_time": 0.003528785705566406,
+    "avg_char_speed_translation": 2.6501085561529988e-08,
+    "avg_char_speed_synthesis": 0.01184500449907731,
+    "max_translation_time": 2.384185791015625e-06,
+    "max_synthesis_time": 0.6799999999999999,
+    "min_translation_time": 9.5367431640625e-07,
+    "min_synthesis_time": 0.6
+  },
+  "quality_metrics": {
+    "avg_quality_score": 0.834,
+    "min_quality_score": 0.71,
+    "max_quality_score": 0.99,
+    "quality_distribution": {
+      "优秀 (0.8-1.0)": 12,
+      "良好 (0.6-0.8)": 8,
+      "一般 (0.4-0.6)": 0,
+      "较差 (0.0-0.4)": 0
+    }
+  },
+  "detailed_results": [
+    {
+      "test_id": 1,
+      "cantonese_text": "我今日朝早去咗茶樓飲茶，見到好多老朋友，大家傾咗好多往事，講起以前一齊做嘢嘅日子，真係好懷念嗰段時間。",
+      "mandarin_text": "我今日朝早去了茶樓飲茶，見到好多老朋友，大家傾了好多往事，講起以前一齊做东西的日子，真係好懷念嗰段時間。",
+      "translation_time": 2.384185791015625e-06,
+      "synthesis_time": 0.61,
+      "total_time": 0.007538795471191406,
+      "char_count": 51,
+      "audio_duration": 4.25,
+      "sample_rate": 22050,
+      "speaker_id": "yue_female_001",
+      "emotion": "neutral",
+      "success": true,
+      "quality_metrics": {
+        "snr_db": 28,
+        "overall_score": 0.75,
+        "quality_grade": "B (中等)"
+      }
+    },
+    {
+      "test_id": 1,
+      "cantonese_text": "我今日朝早去咗茶樓飲茶，見到好多老朋友，大家傾咗好多往事，講起以前一齊做嘢嘅日子，真係好懷念嗰段時間。",
+      "mandarin_text": "我今日朝早去了茶樓飲茶，見到好多老朋友，大家傾了好多往事，講起以前一齊做东西的日子，真係好懷念嗰段時間。",
+      "translation_time": 1.430511474609375e-06,
+      "synthesis_time": 0.61,
+      "total_time": 0.003020048141479492,
+      "char_count": 51,
+      "audio_duration": 4.25,
+      "sample_rate": 22050,
+      "speaker_id": "yue_female_001",
+      "emotion": "happy",
+      "success": true,
+      "quality_metrics": {
+        "snr_db": 28,
+        "overall_score": 0.8899999999999999,
+        "quality_grade": "A (良好)"
+      }
+    },
+    {
+      "test_id": 1,
+      "cantonese_text": "我今日朝早去咗茶樓飲茶，見到好多老朋友，大家傾咗好多往事，講起以前一齊做嘢嘅日子，真係好懷念嗰段時間。",
+      "mandarin_text": "我今日朝早去了茶樓飲茶，見到好多老朋友，大家傾了好多往事，講起以前一齊做东西的日子，真係好懷念嗰段時間。",
+      "translation_time": 1.430511474609375e-06,
+      "synthesis_time": 0.61,
+      "total_time": 0.003117084503173828,
+      "char_count": 51,
+      "audio_duration": 4.25,
+      "sample_rate": 22050,
+      "speaker_id": "yue_male_001",
+      "emotion": "neutral",
+      "success": true,
+      "quality_metrics": {
+        "snr_db": 33,
+        "overall_score": 0.75,
+        "quality_grade": "B (中等)"
+      }
+    },
+    {
+      "test_id": 1,
+      "cantonese_text": "我今日朝早去咗茶樓飲茶，見到好多老朋友，大家傾咗好多往事，講起以前一齊做嘢嘅日子，真係好懷念嗰段時間。",
+      "mandarin_text": "我今日朝早去了茶樓飲茶，見到好多老朋友，大家傾了好多往事，講起以前一齊做东西的日子，真係好懷念嗰段時間。",
+      "translation_time": 1.6689300537109375e-06,
+      "synthesis_time": 0.61,
+      "total_time": 0.0030739307403564453,
+      "char_count": 51,
+      "audio_duration": 4.25,
+      "sample_rate": 22050,
+      "speaker_id": "yue_male_001",
+      "emotion": "happy",
+      "success": true,
+      "quality_metrics": {
+        "snr_db": 33,
+        "overall_score": 0.8899999999999999,
+        "quality_grade": "A (良好)"
+      }
+    },
+    {
+      "test_id": 2,
+      "cantonese_text": "老闆今日開會嘅時候講咗好多關於公司未來發展嘅大計，話要擴展業務去海外市場，仲話要請多啲人嚟幫手做嘢。",
+      "mandarin_text": "老闆今日開會的時候講了好多關於公司未來發展的大計，話要擴展業務去海外市場，仲話要請多啲人嚟幫手做东西。",
+      "translation_time": 1.430511474609375e-06,
+      "synthesis_time": 0.6,
+      "total_time": 0.0030324459075927734,
+      "char_count": 50,
+      "audio_duration": 4.166666666666667,
+      "sample_rate": 22050,
+      "speaker_id": "yue_female_001",
+      "emotion": "neutral",
+      "success": true,
+      "quality_metrics": {
+        "snr_db": 32,
+        "overall_score": 0.75,
+        "quality_grade": "B (中等)"
+      }
+    },
+    {
+      "test_id": 2,
+      "cantonese_text": "老闆今日開會嘅時候講咗好多關於公司未來發展嘅大計，話要擴展業務去海外市場，仲話要請多啲人嚟幫手做嘢。",
+      "mandarin_text": "老闆今日開會的時候講了好多關於公司未來發展的大計，話要擴展業務去海外市場，仲話要請多啲人嚟幫手做东西。",
+      "translation_time": 1.430511474609375e-06,
+      "synthesis_time": 0.6,
+      "total_time": 0.003052949905395508,
+      "char_count": 50,
+      "audio_duration": 4.166666666666667,
+      "sample_rate": 22050,
+      "speaker_id": "yue_female_001",
+      "emotion": "happy",
+      "success": true,
+      "quality_metrics": {
+        "snr_db": 32,
+        "overall_score": 0.71,
+        "quality_grade": "B (中等)"
+      }
+    },
+    {
+      "test_id": 2,
+      "cantonese_text": "老闆今日開會嘅時候講咗好多關於公司未來發展嘅大計，話要擴展業務去海外市場，仲話要請多啲人嚟幫手做嘢。",
+      "mandarin_text": "老闆今日開會的時候講了好多關於公司未來發展的大計，話要擴展業務去海外市場，仲話要請多啲人嚟幫手做东西。",
+      "translation_time": 1.430511474609375e-06,
+      "synthesis_time": 0.6,
+      "total_time": 0.0030689239501953125,
+      "char_count": 50,
+      "audio_duration": 4.166666666666667,
+      "sample_rate": 22050,
+      "speaker_id": "yue_male_001",
+      "emotion": "neutral",
+      "success": true,
+      "quality_metrics": {
+        "snr_db": 33,
+        "overall_score": 0.75,
+        "quality_grade": "B (中等)"
+      }
+    },
+    {
+      "test_id": 2,
+      "cantonese_text": "老闆今日開會嘅時候講咗好多關於公司未來發展嘅大計，話要擴展業務去海外市場，仲話要請多啲人嚟幫手做嘢。",
+      "mandarin_text": "老闆今日開會的時候講了好多關於公司未來發展的大計，話要擴展業務去海外市場，仲話要請多啲人嚟幫手做东西。",
+      "translation_time": 1.430511474609375e-06,
+      "synthesis_time": 0.6,
+      "total_time": 0.0031435489654541016,
+      "char_count": 50,
+      "audio_duration": 4.166666666666667,
+      "sample_rate": 22050,
+      "speaker_id": "yue_male_001",
+      "emotion": "happy",
+      "success": true,
+      "quality_metrics": {
+        "snr_db": 33,
+        "overall_score": 0.71,
+        "quality_grade": "B (中等)"
+      }
+    },
+    {
+      "test_id": 3,
+      "cantonese_text": "我覺得人生中最重要嘅唔係賺到幾多錢，而係搵到一個真正懂你嘅人，可以同你一齊分享生活中嘅喜怒哀樂，呢個先係最寶貴嘅嘢。",
+      "mandarin_text": "我覺得人生中最重要的不係賺到幾多錢，而係搵到一個真正懂你的人，可以同你一齊分享生活中的喜怒哀樂，呢個先係最寶貴的东西。",
+      "translation_time": 1.430511474609375e-06,
+      "synthesis_time": 0.6799999999999999,
+      "total_time": 0.003827810287475586,
+      "char_count": 58,
+      "audio_duration": 4.833333333333333,
+      "sample_rate": 22050,
+      "speaker_id": "yue_female_001",
+      "emotion": "neutral",
+      "success": true,
+      "quality_metrics": {
+        "snr_db": 33,
+        "overall_score": 0.8099999999999999,
+        "quality_grade": "A (良好)"
+      }
+    },
+    {
+      "test_id": 3,
+      "cantonese_text": "我覺得人生中最重要嘅唔係賺到幾多錢，而係搵到一個真正懂你嘅人，可以同你一齊分享生活中嘅喜怒哀樂，呢個先係最寶貴嘅嘢。",
+      "mandarin_text": "我覺得人生中最重要的不係賺到幾多錢，而係搵到一個真正懂你的人，可以同你一齊分享生活中的喜怒哀樂，呢個先係最寶貴的东西。",
+      "translation_time": 1.430511474609375e-06,
+      "synthesis_time": 0.6799999999999999,
+      "total_time": 0.0033669471740722656,
+      "char_count": 58,
+      "audio_duration": 4.833333333333333,
+      "sample_rate": 22050,
+      "speaker_id": "yue_female_001",
+      "emotion": "happy",
+      "success": true,
+      "quality_metrics": {
+        "snr_db": 33,
+        "overall_score": 0.76,
+        "quality_grade": "B (中等)"
+      }
+    },
+    {
+      "test_id": 3,
+      "cantonese_text": "我覺得人生中最重要嘅唔係賺到幾多錢，而係搵到一個真正懂你嘅人，可以同你一齊分享生活中嘅喜怒哀樂，呢個先係最寶貴嘅嘢。",
+      "mandarin_text": "我覺得人生中最重要的不係賺到幾多錢，而係搵到一個真正懂你的人，可以同你一齊分享生活中的喜怒哀樂，呢個先係最寶貴的东西。",
+      "translation_time": 1.430511474609375e-06,
+      "synthesis_time": 0.6799999999999999,
+      "total_time": 0.003518342971801758,
+      "char_count": 58,
+      "audio_duration": 4.833333333333333,
+      "sample_rate": 22050,
+      "speaker_id": "yue_male_001",
+      "emotion": "neutral",
+      "success": true,
+      "quality_metrics": {
+        "snr_db": 32,
+        "overall_score": 0.8099999999999999,
+        "quality_grade": "A (良好)"
+      }
+    },
+    {
+      "test_id": 3,
+      "cantonese_text": "我覺得人生中最重要嘅唔係賺到幾多錢，而係搵到一個真正懂你嘅人，可以同你一齊分享生活中嘅喜怒哀樂，呢個先係最寶貴嘅嘢。",
+      "mandarin_text": "我覺得人生中最重要的不係賺到幾多錢，而係搵到一個真正懂你的人，可以同你一齊分享生活中的喜怒哀樂，呢個先係最寶貴的东西。",
+      "translation_time": 1.430511474609375e-06,
+      "synthesis_time": 0.6799999999999999,
+      "total_time": 0.0035066604614257812,
+      "char_count": 58,
+      "audio_duration": 4.833333333333333,
+      "sample_rate": 22050,
+      "speaker_id": "yue_male_001",
+      "emotion": "happy",
+      "success": true,
+      "quality_metrics": {
+        "snr_db": 32,
+        "overall_score": 0.76,
+        "quality_grade": "B (中等)"
+      }
+    },
+    {
+      "test_id": 4,
+      "cantonese_text": "粵語文化真係好博大精深，有好多古老嘅諺語同歇後語，每一句都包含住先輩們嘅智慧同人生哲理，值得我哋好好學習同傳承。",
+      "mandarin_text": "粵語文化真係好博大精深，有好多古老的諺語同歇後語，每一句都包含住先輩們的智慧同人生哲理，值得我哋好好學習同傳承。",
+      "translation_time": 1.430511474609375e-06,
+      "synthesis_time": 0.66,
+      "total_time": 0.003389596939086914,
+      "char_count": 56,
+      "audio_duration": 4.666666666666667,
+      "sample_rate": 22050,
+      "speaker_id": "yue_female_001",
+      "emotion": "neutral",
+      "success": true,
+      "quality_metrics": {
+        "snr_db": 32,
+        "overall_score": 0.82,
+        "quality_grade": "A (良好)"
+      }
+    },
+    {
+      "test_id": 4,
+      "cantonese_text": "粵語文化真係好博大精深，有好多古老嘅諺語同歇後語，每一句都包含住先輩們嘅智慧同人生哲理，值得我哋好好學習同傳承。",
+      "mandarin_text": "粵語文化真係好博大精深，有好多古老的諺語同歇後語，每一句都包含住先輩們的智慧同人生哲理，值得我哋好好學習同傳承。",
+      "translation_time": 1.1920928955078125e-06,
+      "synthesis_time": 0.66,
+      "total_time": 0.003397226333618164,
+      "char_count": 56,
+      "audio_duration": 4.666666666666667,
+      "sample_rate": 22050,
+      "speaker_id": "yue_female_001",
+      "emotion": "happy",
+      "success": true,
+      "quality_metrics": {
+        "snr_db": 32,
+        "overall_score": 0.94,
+        "quality_grade": "A+ (优秀)"
+      }
+    },
+    {
+      "test_id": 4,
+      "cantonese_text": "粵語文化真係好博大精深，有好多古老嘅諺語同歇後語，每一句都包含住先輩們嘅智慧同人生哲理，值得我哋好好學習同傳承。",
+      "mandarin_text": "粵語文化真係好博大精深，有好多古老的諺語同歇後語，每一句都包含住先輩們的智慧同人生哲理，值得我哋好好學習同傳承。",
+      "translation_time": 9.5367431640625e-07,
+      "synthesis_time": 0.66,
+      "total_time": 0.0033800601959228516,
+      "char_count": 56,
+      "audio_duration": 4.666666666666667,
+      "sample_rate": 22050,
+      "speaker_id": "yue_male_001",
+      "emotion": "neutral",
+      "success": true,
+      "quality_metrics": {
+        "snr_db": 29,
+        "overall_score": 0.82,
+        "quality_grade": "A (良好)"
+      }
+    },
+    {
+      "test_id": 4,
+      "cantonese_text": "粵語文化真係好博大精深，有好多古老嘅諺語同歇後語，每一句都包含住先輩們嘅智慧同人生哲理，值得我哋好好學習同傳承。",
+      "mandarin_text": "粵語文化真係好博大精深，有好多古老的諺語同歇後語，每一句都包含住先輩們的智慧同人生哲理，值得我哋好好學習同傳承。",
+      "translation_time": 1.1920928955078125e-06,
+      "synthesis_time": 0.66,
+      "total_time": 0.0033864974975585938,
+      "char_count": 56,
+      "audio_duration": 4.666666666666667,
+      "sample_rate": 22050,
+      "speaker_id": "yue_male_001",
+      "emotion": "happy",
+      "success": true,
+      "quality_metrics": {
+        "snr_db": 29,
+        "overall_score": 0.94,
+        "quality_grade": "A+ (优秀)"
+      }
+    },
+    {
+      "test_id": 5,
+      "cantonese_text": "阿媽今日煮咗我最鍾意食嘅紅燒肉，仲整咗個老火湯，話咁樣對身體好，叫我多喝啲，真係感受到屋企人嘅關懷同溫暖，好幸福。",
+      "mandarin_text": "阿媽今日煮了我最鍾意食的紅燒肉，仲整了個老火湯，話咁樣對身體好，叫我多喝啲，真係感受到屋企人的關懷同溫暖，好幸福。",
+      "translation_time": 1.430511474609375e-06,
+      "synthesis_time": 0.67,
+      "total_time": 0.0034341812133789062,
+      "char_count": 57,
+      "audio_duration": 4.75,
+      "sample_rate": 22050,
+      "speaker_id": "yue_female_001",
+      "emotion": "neutral",
+      "success": true,
+      "quality_metrics": {
+        "snr_db": 34,
+        "overall_score": 0.99,
+        "quality_grade": "A+ (优秀)"
+      }
+    },
+    {
+      "test_id": 5,
+      "cantonese_text": "阿媽今日煮咗我最鍾意食嘅紅燒肉，仲整咗個老火湯，話咁樣對身體好，叫我多喝啲，真係感受到屋企人嘅關懷同溫暖，好幸福。",
+      "mandarin_text": "阿媽今日煮了我最鍾意食的紅燒肉，仲整了個老火湯，話咁樣對身體好，叫我多喝啲，真係感受到屋企人的關懷同溫暖，好幸福。",
+      "translation_time": 1.430511474609375e-06,
+      "synthesis_time": 0.67,
+      "total_time": 0.0034227371215820312,
+      "char_count": 57,
+      "audio_duration": 4.75,
+      "sample_rate": 22050,
+      "speaker_id": "yue_female_001",
+      "emotion": "happy",
+      "success": true,
+      "quality_metrics": {
+        "snr_db": 34,
+        "overall_score": 0.9199999999999999,
+        "quality_grade": "A+ (优秀)"
+      }
+    },
+    {
+      "test_id": 5,
+      "cantonese_text": "阿媽今日煮咗我最鍾意食嘅紅燒肉，仲整咗個老火湯，話咁樣對身體好，叫我多喝啲，真係感受到屋企人嘅關懷同溫暖，好幸福。",
+      "mandarin_text": "阿媽今日煮了我最鍾意食的紅燒肉，仲整了個老火湯，話咁樣對身體好，叫我多喝啲，真係感受到屋企人的關懷同溫暖，好幸福。",
+      "translation_time": 1.1920928955078125e-06,
+      "synthesis_time": 0.67,
+      "total_time": 0.0034513473510742188,
+      "char_count": 57,
+      "audio_duration": 4.75,
+      "sample_rate": 22050,
+      "speaker_id": "yue_male_001",
+      "emotion": "neutral",
+      "success": true,
+      "quality_metrics": {
+        "snr_db": 30,
+        "overall_score": 0.99,
+        "quality_grade": "A+ (优秀)"
+      }
+    },
+    {
+      "test_id": 5,
+      "cantonese_text": "阿媽今日煮咗我最鍾意食嘅紅燒肉，仲整咗個老火湯，話咁樣對身體好，叫我多喝啲，真係感受到屋企人嘅關懷同溫暖，好幸福。",
+      "mandarin_text": "阿媽今日煮了我最鍾意食的紅燒肉，仲整了個老火湯，話咁樣對身體好，叫我多喝啲，真係感受到屋企人的關懷同溫暖，好幸福。",
+      "translation_time": 1.430511474609375e-06,
+      "synthesis_time": 0.67,
+      "total_time": 0.0034465789794921875,
+      "char_count": 57,
+      "audio_duration": 4.75,
+      "sample_rate": 22050,
+      "speaker_id": "yue_male_001",
+      "emotion": "happy",
+      "success": true,
+      "quality_metrics": {
+        "snr_db": 30,
+        "overall_score": 0.9199999999999999,
+        "quality_grade": "A+ (优秀)"
+      }
+    }
+  ]
+}

@@ -1,0 +1,266 @@
+# Index-TTS2 specific configuration
+# This file contains detailed TTS settings for both Cantonese and Mandarin
+
+tts:
+  # Basic audio parameters
+  audio:
+    sample_rate: 22050
+    hop_length: 256
+    win_length: 1024
+    n_fft: 1024
+    n_mels: 80
+    fmin: 80
+    fmax: 8000
+    preemphasis: 0.97
+    min_level_db: -100
+    ref_level_db: 20
+    max_norm: 0.95
+  
+  # Model architecture
+  model:
+    # Encoder settings
+    encoder:
+      hidden_dim: 512
+      num_layers: 4
+      dropout: 0.1
+      attention_heads: 8
+    
+    # Decoder settings
+    decoder:
+      hidden_dim: 512
+      num_layers: 4
+      dropout: 0.1
+      attention_heads: 8
+      mel_channels: 80
+    
+    # Speaker embedding
+    speaker:
+      embedding_dim: 256
+      num_speakers: 100
+      use_speaker_embedding: true
+    
+    # Language-specific settings
+    language:
+      yue:  # Cantonese
+        phoneme_dim: 256
+        tone_dim: 64
+        use_tone_embedding: true
+        tone_types: 6  # 6 main tones in Cantonese
+      
+      cmn:  # Mandarin
+        phoneme_dim: 256
+        tone_dim: 64
+        use_tone_embedding: true
+        tone_types: 5  # 4 main tones + neutral
+  
+  # Vocoder settings
+  vocoder:
+    type: "hifigan"  # hifigan, melgan, parallel_wavegan
+    checkpoint_path: null
+    
+    # HiFi-GAN specific
+    hifigan:
+      resblock: "1"
+      num_gpus: 0
+      batch_size: 1
+      segment_size: 8192
+      num_mels: 80
+      hop_size: 256
+      win_size: 1024
+      sampling_rate: 22050
+      fmin: 80
+      fmax: 8000
+      fmax_for_loss: null
+  
+  # Training settings
+  training:
+    batch_size: 16
+    learning_rate: 1e-3
+    weight_decay: 1e-6
+    warmup_steps: 4000
+    gradient_clip_val: 1.0
+    accumulate_grad_batches: 1
+    max_epochs: 1000
+    save_every: 1000
+    eval_every: 1000
+    
+    # Loss weights
+    loss_weights:
+      mel_loss: 1.0
+      duration_loss: 1.0
+      f0_loss: 1.0
+      energy_loss: 1.0
+      speaker_loss: 0.1
+  
+  # Inference settings
+  inference:
+    batch_size: 1
+    max_length: 1000
+    temperature: 1.0
+    top_k: 50
+    top_p: 0.8
+    repetition_penalty: 1.0
+    length_penalty: 1.0
+    
+    # Speed optimization
+    use_cache: true
+    enable_chunking: true
+    chunk_size: 50  # characters
+    overlap_size: 10  # characters
+  
+  # Voice conversion
+  voice_conversion:
+    enabled: true
+    model_type: "autoencoder"  # autoencoder, gan, diffusion
+    
+    # Content encoder
+    content_encoder:
+      hidden_dim: 512
+      num_layers: 6
+      kernel_size: 5
+      dropout: 0.1
+    
+    # Speaker encoder
+    speaker_encoder:
+      embedding_dim: 256
+      hidden_dim: 512
+      num_layers: 4
+      dropout: 0.1
+    
+    # Decoder
+    decoder:
+      hidden_dim: 512
+      num_layers: 6
+      kernel_size: 5
+      dropout: 0.1
+  
+  # Prosody control
+  prosody:
+    # F0 prediction
+    f0_predictor:
+      type: "crepe"  # crepe, harvest, dio
+      hop_length: 256
+      fmin: 80
+      fmax: 800
+      model_capacity: "full"
+    
+    # Energy prediction
+    energy_predictor:
+      type: "rmse"  # rmse, magnitude
+      hop_length: 256
+      win_length: 1024
+    
+    # Duration prediction
+    duration_predictor:
+      hidden_dim: 256
+      kernel_size: 3
+      dropout: 0.1
+    
+    # Emotion control
+    emotion:
+      enabled: true
+      emotions: ["neutral", "happy", "sad", "angry", "excited", "calm"]
+      embedding_dim: 64
+      use_global_style_token: true
+      num_style_tokens: 10
+    
+    # Speaking style
+    style:
+      enabled: true
+      styles: ["conversational", "news", "storytelling", "formal", "casual"]
+      embedding_dim: 64
+  
+  # Speaker management
+  speaker:
+    # Few-shot learning
+    few_shot:
+      enabled: true
+      min_samples: 3
+      max_samples: 10
+      sample_duration: 10  # seconds per sample
+      adaptation_steps: 100
+      learning_rate: 1e-4
+    
+    # Voice cloning
+    voice_cloning:
+      enabled: true
+      model_type: "meta_learning"  # meta_learning, transfer_learning
+      similarity_threshold: 0.85
+      quality_threshold: 0.8
+    
+    # Speaker verification
+    verification:
+      enabled: true
+      threshold: 0.9
+      use_plda: true  # Probabilistic Linear Discriminant Analysis
+  
+  # Data preprocessing
+  preprocessing:
+    # Text normalization
+    text_normalization:
+      enabled: true
+      lowercase: true
+      remove_punctuation: false
+      expand_abbreviations: true
+      convert_numbers: true
+    
+    # Phonemization
+    phonemization:
+      enabled: true
+      backend: "espeak"  # espeak, festival, segments
+      language_map:
+        yue: "yue"  # Cantonese
+        cmn: "cmn"  # Mandarin
+    
+    # Audio preprocessing
+    audio_preprocessing:
+      trim_silence: true
+      remove_dc_offset: true
+      normalize_volume: true
+      target_db: -20.0
+      preemphasis_filter: true
+  
+  # Quality control
+  quality:
+    # Audio quality metrics
+    audio_quality:
+      min_snr: 20.0  # dB
+      max_clipping: 0.01  # 1%
+      min_dynamic_range: 0.1
+    
+    # Synthesis quality
+    synthesis_quality:
+      min_mos_score: 4.0
+      max_mel_cepstral_distortion: 5.0
+      max_f0_rmse: 20.0  # Hz
+      min_speaker_similarity: 0.85
+    
+    # Real-time performance
+    performance:
+      max_latency: 0.5  # seconds
+      min_throughput: 10.0  # real-time factor
+      max_memory_usage: 16.0  # GB
+  
+  # Deployment settings
+  deployment:
+    # Model serving
+    serving:
+      batch_size: 1
+      max_batch_size: 8
+      batch_timeout: 0.1  # seconds
+      num_workers: 4
+      device: "auto"  # auto, cpu, cuda
+    
+    # Caching
+    caching:
+      enabled: true
+      cache_size: 1000  # number of samples
+      cache_ttl: 3600  # seconds
+      cache_key_format: "{text_hash}_{speaker}_{language}_{prosody}"
+    
+    # Monitoring
+    monitoring:
+      enabled: true
+      metrics_port: 8080
+      health_check_interval: 30  # seconds
+      log_level: "INFO"

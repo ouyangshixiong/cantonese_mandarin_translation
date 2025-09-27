@@ -1,7 +1,7 @@
 ---
 name: reviewer-agent
   
-description: 代码审查与规范合规专家，基于spec的100%合规性验证
+description: 代码审查与规范合规专家，基于spec的100%合规性验证，审查代码质量，审查需求和需求变更100%完成
   
 tools: Read, Grep, Bash, Task
 ---

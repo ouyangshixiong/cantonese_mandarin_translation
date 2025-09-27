@@ -3,7 +3,7 @@ Utility functions for inference module
 """
 import argparse
 import logging
-from typing import Optional
+from typing import Optional, Tuple
 
 
 def setup_logging(verbose: bool = False) -> None:
@@ -45,6 +45,25 @@ def parse_args() -> argparse.Namespace:
     # Output configuration
     parser.add_argument("--verbose", action="store_true",
                        help="Verbose output")
+    
+    # TTS configuration (NEW)
+    parser.add_argument("--enable_tts", action="store_true",
+                       help="Enable text-to-speech synthesis")
+    parser.add_argument("--speaker_id", type=str, default=None,
+                       help="Speaker ID for TTS (e.g., yue_female_001, cmn_male_001)")
+    parser.add_argument("--audio_format", type=str, default="wav",
+                       choices=["wav", "mp3", "flac"], help="Audio output format")
+    parser.add_argument("--emotion", type=str, default="neutral",
+                       choices=["neutral", "happy", "sad", "angry", "excited", "calm"],
+                       help="Emotion for TTS synthesis")
+    parser.add_argument("--speed", type=float, default=1.0,
+                       help="Speech speed (0.5-2.0)")
+    parser.add_argument("--pitch_shift", type=float, default=0.0,
+                       help="Pitch shift in semitones (-6 to +6)")
+    parser.add_argument("--voice_output_dir", type=str, default="./outputs/audio",
+                       help="Directory for audio output files")
+    parser.add_argument("--preserve_voice", action="store_true",
+                       help="Preserve speaker voice across translation")
     
     return parser.parse_args()
 

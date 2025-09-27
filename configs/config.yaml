@@ -100,6 +100,71 @@ translation:
   target_lang: "mandarin"
   support_bidirectional: true
   max_input_length: 512
+
+# Index-TTS2 configuration
+tts:
+  enabled: true
+  sample_rate: 22050
+  hop_length: 256
+  win_length: 1024
+  n_mels: 80
+  n_fft: 1024
+  fmin: 80
+  fmax: 8000
+  
+  # Model paths
+  model_paths:
+    yue: "./models/tts/index_tts2_cantonese.pth"
+    cmn: "./models/tts/index_tts2_mandarin.pth"
+  
+  vocoder_paths:
+    yue: "./models/tts/vocoder_cantonese.pth"
+    cmn: "./models/tts/vocoder_mandarin.pth"
+  
+  # Speaker settings
+  speaker_embedding_dim: 256
+  default_speaker_yue: "yue_female_001"
+  default_speaker_cmn: "cmn_female_001"
+  
+  # Voice conversion settings
+  voice_conversion:
+    enabled: true
+    preserve_speaker: true
+    adapt_prosody: true
+    cross_lingual: true
+  
+  # Audio output settings
+  audio_format: "wav"  # wav, mp3, flac
+  bit_depth: 16
+  quality: "high"  # low, medium, high
+  
+  # Performance settings
+  batch_size: 1
+  max_concurrent_synthesis: 4
+  gpu_memory_fraction: 0.8
+  
+  # Prosody control
+  prosody:
+    emotions: ["neutral", "happy", "sad", "angry", "excited", "calm"]
+    default_emotion: "neutral"
+    speed_range: [0.5, 2.0]
+    pitch_range: [-6, 6]  # semitones
+    energy_range: [0.5, 1.5]
+  
+  # Speaker management
+  speaker:
+    embedding_dim: 256
+    min_audio_duration: 5.0  # seconds
+    max_audio_duration: 300.0  # seconds
+    voice_cloning_threshold: 0.85
+    similarity_threshold: 0.7
+  
+  # Quality settings
+  quality_thresholds:
+    mos_score: 4.0
+    speaker_similarity: 0.85
+    synthesis_latency: 0.5  # seconds
+    audio_quality_score: 0.8
   
 # Security and limits
 security:
