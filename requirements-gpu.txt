@@ -1,0 +1,97 @@
+# Cantonese-Mandarin Translation System - GPU Requirements
+# Optimized for high-memory GPUs (RTX 4090, A100, H100)
+# Memory requirements: 24GB+ for small models, 80GB+ for Hunyuan-MT-7B
+
+# Core ML Frameworks - GPU Optimized
+# CUDA 11.8 support
+torch==2.4.1+cu118
+torchvision==0.15.0+cu118
+torchaudio==2.1.0+cu118
+pytorch-lightning>=2.1.0
+
+# CUDA 12.1 support (alternative)
+# torch==2.4.1+cu121
+# torchvision==0.15.0+cu121
+# torchaudio==2.1.0+cu121
+
+# PaddlePaddle GPU
+paddlepaddle-gpu>=2.6.0.post118; sys_platform != "darwin"
+paddlenlp>=2.6.0
+
+# Model Loading and Management
+modelscope>=1.30.0
+transformers>=4.35.0
+tokenizers>=0.15.0
+accelerate>=0.24.0
+safetensors>=0.4.3
+
+# Memory Optimization for Large Models
+deepspeed>=0.12.0
+fairscale>=0.4.13
+bitsandbytes>=0.41.0
+
+# Gradient Checkpointing and Memory Efficiency
+xformers>=0.0.22  # Memory efficient attention
+flash-attn>=2.3.0  # Flash Attention for long sequences
+
+# Data Processing
+pandas>=2.0.0
+numpy>=1.24.0
+scikit-learn>=1.3.0
+
+# Text Processing
+opencc-python-reimplemented>=0.1.7
+jieba>=0.42.1
+sentencepiece>=0.1.99
+
+# Configuration Management
+omegaconf>=2.3.0
+hydra-core>=1.3.0
+
+# API and Web Framework
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.5.0
+
+# Metrics and Evaluation
+torchmetrics>=1.2.0
+sacrebleu>=2.3.1
+rouge-score>=0.1.2
+
+# Logging and Monitoring
+wandb>=0.16.0
+tensorboard>=2.15.0
+rich>=13.7.0
+
+# Utilities
+tqdm>=4.66.0
+click>=8.1.0
+pyyaml>=6.0.1
+requests>=2.31.0
+
+# Development and Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+black>=23.11.0
+flake8>=6.1.0
+mypy>=1.7.0
+
+# Container and Deployment
+docker>=6.1.0
+docker-compose>=1.29.0
+
+# Performance Optimization
+onnxruntime-gpu>=1.16.0; sys_platform != "darwin"
+tensorrt>=8.6.0  # For inference optimization
+
+# GPU Memory Management
+nvidia-ml-py3>=7.352.0
+pynvml>=11.5.0
+gpustat>=1.1.1
+
+# Language Specific
+opencc==1.1.6
+
+# Version constraints
+python_version >= "3.8"
+python_version < "3.12"

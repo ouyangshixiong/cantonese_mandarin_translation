@@ -1,0 +1,65 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+logs/
+outputs/
+checkpoints/
+data/
+*.log
+*.tmp
+*.temp
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+tests/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Model cache
+.huggingface/
+*.bin
+*.safetensors
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+.cache/

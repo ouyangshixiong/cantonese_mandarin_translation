@@ -1,0 +1,84 @@
+# GPU Docker image for Cantonese-Mandarin Translation
+FROM nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    CUDA_VISIBLE_DEVICES=0 \
+    NVIDIA_VISIBLE_DEVICES=all \
+    NVIDIA_DRIVER_CAPABILITIES=compute,utility
+
+# Set work directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    python3.10 \
+    python3.10-dev \
+    python3-pip \
+    gcc \
+    g++ \
+    gfortran \
+    libopenblas-dev \
+    liblapack-dev \
+    pkg-config \
+    curl \
+    wget \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create symlink for python
+RUN ln -s /usr/bin/python3.10 /usr/bin/python
+
+# Copy requirements
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --upgrade pip setuptools wheel && \
+    pip install -r requirements.txt && \
+    rm requirements.txt
+
+# Copy application code
+COPY src/ ./src/
+COPY scripts/ ./scripts/
+COPY configs/ ./configs/
+COPY *.md ./
+COPY *.py ./
+
+# Create necessary directories
+RUN mkdir -p data logs outputs checkpoints
+
+# Create non-root user
+RUN groupadd -r appuser && useradd -r -g appuser appuser && \
+    chown -R appuser:appuser /app
+USER appuser
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=10s --retries=3 \
+    CMD python -c "import torch; import paddle; print(f'GPU available: {torch.cuda.is_available()}'); print(f'GPU count: {torch.cuda.device_count()}')" || exit 1
+
+# Expose port
+EXPOSE 8000
+
+# Set environment variables for production
+ENV ENVIRONMENT=production \
+    LOG_LEVEL=INFO \
+    WORKERS=1 \
+    HOST=0.0.0.0 \
+    PORT=8000 \
+    PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:512 \
+    FLAGS_fraction_of_gpu_memory_to_use=0.8
+
+# Default command
+CMD ["python", "-m", "uvicorn", "scripts.api_server:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
+
+# Labels
+LABEL maintainer="AI Translation Team" \
+      description="Cantonese-Mandarin Translation System (GPU)" \
+      version="1.0.0" \
+      cuda.version="12.1.1" \
+      cudnn.version="8" \
+      pytorch.version="2.4.1" \
+      paddle.version="2.6.0"

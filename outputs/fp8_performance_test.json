@@ -1,0 +1,71 @@
+{
+  "model": "Tencent-Hunyuan/Hunyuan-MT-7B-fp8",
+  "framework": "pytorch",
+  "model_type": "CausalLM (FP8)",
+  "average_inference_time": 2.248184657096863,
+  "average_time_per_character": 0.5109510584311051,
+  "total_test_cases": 10,
+  "total_characters": 44,
+  "results": [
+    {
+      "input": "你好嗎？",
+      "expected": "你好吗？",
+      "predicted": "你好嗎？",
+      "inference_time": 1.9665148258209229
+    },
+    {
+      "input": "食咗飯未？",
+      "expected": "吃饭了吗？",
+      "predicted": "吃過飯沒有？",
+      "inference_time": 2.749685764312744
+    },
+    {
+      "input": "我今日好開心",
+      "expected": "我今天很开心",
+      "predicted": "我今天非常開心。",
+      "inference_time": 2.7497103214263916
+    },
+    {
+      "input": "呢度好靚",
+      "expected": "这里很漂亮",
+      "predicted": "這裡真的很美。",
+      "inference_time": 2.3710079193115234
+    },
+    {
+      "input": "幾多錢？",
+      "expected": "多少钱？",
+      "predicted": "多少錢？",
+      "inference_time": 1.574345588684082
+    },
+    {
+      "input": "我哋去邊度？",
+      "expected": "我们去哪里？",
+      "predicted": "我們去哪裡？",
+      "inference_time": 2.763532876968384
+    },
+    {
+      "input": "呢個好好食",
+      "expected": "这个很好吃",
+      "predicted": "這個真的很好吃！",
+      "inference_time": 2.7540974617004395
+    },
+    {
+      "input": "天氣好好",
+      "expected": "天气很好",
+      "predicted": "天氣很好。",
+      "inference_time": 1.9813892841339111
+    },
+    {
+      "input": "多謝你",
+      "expected": "谢谢你",
+      "predicted": "謝謝你！",
+      "inference_time": 1.9790551662445068
+    },
+    {
+      "input": "對唔住",
+      "expected": "对不起",
+      "predicted": "對不起。",
+      "inference_time": 1.5925073623657227
+    }
+  ]
+}

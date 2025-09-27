@@ -1,0 +1,63 @@
+# @package _global_
+# Hunyuan-MT-7B specific configuration
+
+model:
+  name: "Tencent-Hunyuan/Hunyuan-MT-7B"
+  type: "seq2seq"
+  architecture: "transformer"
+  
+  # Model specifications
+  parameters: 7000000000  # 7B parameters
+  hidden_size: 4096
+  num_attention_heads: 32
+  num_hidden_layers: 32
+  vocab_size: 65024
+  
+  # Generation parameters
+  max_length: 128
+  min_length: 1
+  beam_size: 4
+  early_stopping: true
+  no_repeat_ngram_size: 2
+  length_penalty: 1.0
+  temperature: 1.0
+  top_k: 50
+  top_p: 0.95
+  
+  # Memory optimization
+  use_cache: true
+  pad_token_id: 0
+  eos_token_id: 2
+  bos_token_id: 1
+  
+  # Quantization settings
+  quantization:
+    enabled: false
+    bits: 8
+    dynamic: true
+  
+  # Performance settings
+  torch_dtype: "float16"
+  device_map: "auto"
+  low_cpu_mem_usage: true
+  
+  # Supported languages
+  languages:
+    - "cantonese"
+    - "mandarin"
+    - "chinese"
+    - "english"
+  
+  # Special tokens for Cantonese
+  special_tokens:
+    cantonese_start: "<yue>"
+    cantonese_end: "</yue>"
+    mandarin_start: "<cmn>"
+    mandarin_end: "</cmn>"
+  
+  # Resource requirements
+  resources:
+    gpu_memory_gb: 16  # FP16 inference
+    gpu_memory_int8_gb: 10  # INT8 inference
+    cpu_memory_gb: 8
+    disk_space_gb: 50

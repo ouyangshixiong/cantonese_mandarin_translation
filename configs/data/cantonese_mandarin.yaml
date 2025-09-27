@@ -1,0 +1,113 @@
+# @package _global_
+# Cantonese-Mandarin dataset configuration
+
+data:
+  # Dataset sources
+  sources:
+    primary: "UNPC"  # United Nations Parallel Corpus
+    secondary: "OpenSubtitles"
+    custom: "CantoneseParallel"
+  
+  # Data paths
+  paths:
+    train: "data/train.jsonl"
+    validation: "data/val.jsonl"
+    test: "data/test.jsonl"
+    
+  # Data format
+  format: "jsonl"  # jsonl, tsv, csv
+  
+  # Field mappings
+  fields:
+    source: "cantonese"
+    target: "mandarin"
+    source_id: "yue"
+    target_id: "cmn"
+  
+  # Preprocessing settings
+  preprocessing:
+    # Text normalization
+    normalize: true
+    lowercase: false
+    remove_punctuation: false
+    
+    # Cantonese specific processing
+    cantonese:
+      convert_traditional: true  # Convert traditional to simplified
+      handle_particles: true     # Handle 嘅、咗、咁 etc.
+      romanization: false        # Add Jyutping romanization
+      
+    # Length filtering
+    min_length: 1
+    max_length: 128
+    length_ratio: 2.0
+    
+    # Quality filtering
+    deduplication: true
+    language_detection: true
+    profanity_filter: true
+  
+  # Dataset statistics (expected)
+  statistics:
+    train_samples: 15000000  # 15M UNPC Chinese pairs
+    val_samples: 10000
+    test_samples: 5000
+    
+  # Mini dataset for quick validation
+  mini_dataset:
+    enabled: true
+    samples: 10000
+    max_epochs: 1
+    validation_frequency: 0.25
+  
+  # Data augmentation
+  augmentation:
+    back_translation: false
+    synonym_replacement: false
+    random_deletion: false
+    
+  # Evaluation settings
+  evaluation:
+    metrics: ["bleu", "chrf", "ter"]
+    bleu_smoothing: "exp"
+    case_sensitive: false
+    
+  # Special handling for Cantonese characters
+  cantonese_mapping:
+    # Common Cantonese particles and expressions
+    particles:
+      "嘅": "的"
+      "咗": "了"
+      "咁": "这么"
+      "噉": "这样"
+      "啲": "些"
+      "哋": "们"
+      "乜": "什么"
+      "冇": "没有"
+      "呢": "这"
+      "嗰": "那"
+      "喺": "在"
+      "瞓": "睡"
+      "飲": "喝"
+      "食": "吃"
+      "行": "走"
+      "返": "回"
+    
+    # Common expressions
+    expressions:
+      "食咗飯未": "吃饭了吗"
+      "你好嗎": "你好吗"
+      "幾多錢": "多少钱"
+      "幾時": "什么时候"
+      "邊度": "哪里"
+      "點解": "为什么"
+      "唔該": "谢谢/劳驾"
+      "對唔住": "对不起"
+      "冇問題": "没问题"
+      
+  # Data quality thresholds
+  quality_thresholds:
+    min_chinese_ratio: 0.8
+    max_english_ratio: 0.1
+    min_unique_ratio: 0.5
+    max_repeated_chars: 10

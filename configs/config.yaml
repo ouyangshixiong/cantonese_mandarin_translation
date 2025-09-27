@@ -1,0 +1,108 @@
+# Main configuration for Cantonese-Mandarin translation system
+# OmegaConf compatible configuration
+
+defaults:
+  - model: hunyuan_mt7b
+  - data: cantonese_mandarin
+  - _self_
+
+# Project information
+project:
+  name: "cantonese_mandarin_translation"
+  version: "1.0.0"
+  description: "Hunyuan-MT-7B based Cantonese-Mandarin translation system"
+  author: "AI Translation Team"
+
+# Framework configuration
+framework:
+  name: "pytorch"  # pytorch, paddle, or both
+  precision: 16
+  distributed: false
+
+# Model configuration
+model:
+  name: "Tencent-Hunyuan/Hunyuan-MT-7B-fp8"
+  max_length: 128
+  beam_size: 4
+  early_stopping: true
+  no_repeat_ngram_size: 2
+  length_penalty: 1.0
+  top_k: 20
+  top_p: 0.6
+  repetition_penalty: 1.05
+  temperature: 0.7
+  
+# Training configuration
+training:
+  batch_size: 8
+  learning_rate: 2e-5
+  weight_decay: 0.01
+  warmup_steps: 500
+  max_epochs: 1
+  gradient_clip_val: 1.0
+  accumulate_grad_batches: 1
+  val_check_interval: 0.25
+  save_top_k: 1
+
+# Data configuration
+data:
+  max_length: 128
+  num_workers: 4
+  pin_memory: true
+  train_split: 0.8
+  val_split: 0.1
+  test_split: 0.1
+
+# Hardware configuration
+hardware:
+  gpus: 1
+  device: "auto"  # auto, cpu, cuda, gpu
+  mixed_precision: true
+  
+# Performance optimization
+optimization:
+  int8_quantization: false  # Enable for memory optimization
+  batch_inference: true
+  dynamic_batching: true
+  max_batch_size: 32
+
+# Evaluation metrics
+evaluation:
+  bleu_n_gram: 4
+  metrics: ["bleu", "chrf", "ter"]
+  test_samples: 1000
+  
+# Logging and monitoring
+logging:
+  level: "INFO"
+  log_every_n_steps: 10
+  enable_progress_bar: true
+  save_predictions: true
+  
+# Output paths
+paths:
+  output_dir: "./outputs"
+  data_dir: "./data"
+  logs_dir: "./logs"
+  checkpoints_dir: "./checkpoints"
+  
+# API configuration (for FastAPI deployment)
+api:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 1
+  max_request_size: 10485760  # 10MB
+  timeout: 30
+  
+# Translation specific settings
+translation:
+  source_lang: "cantonese"
+  target_lang: "mandarin"
+  support_bidirectional: true
+  max_input_length: 512
+  
+# Security and limits
+security:
+  max_text_length: 10000
+  rate_limit: 100  # requests per minute
+  enable_cors: true
