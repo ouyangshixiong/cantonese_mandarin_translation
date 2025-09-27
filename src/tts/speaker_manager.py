@@ -61,10 +61,18 @@ class SpeakerManager:
         self.few_shot_learner = None
         
         # Configuration
-        self.embedding_dim = config.speaker.get('embedding_dim', 256)
-        self.min_audio_duration = config.speaker.get('min_audio_duration', 5.0)  # seconds
-        self.max_audio_duration = config.speaker.get('max_audio_duration', 300.0)  # seconds
-        self.sample_rate = config.speaker.get('sample_rate', 22050)
+        # Handle both config.speaker and config.tts.speaker for compatibility
+        speaker_config = getattr(config, 'speaker', None) or getattr(config, 'tts', {}).get('speaker', {})
+        tts_config = getattr(config, 'tts', {})
+        
+        self.embedding_dim = speaker_config.get('embedding_dim', 256)
+        self.min_audio_duration = speaker_config.get('min_audio_duration', 5.0)  # seconds
+        self.max_audio_duration = speaker_config.get('max_audio_duration', 300.0)  # seconds
+        self.sample_rate = speaker_config.get('sample_rate', 22050)
+        
+        # TTS audio parameters
+        self.n_mels = tts_config.get('n_mels', 80)
+        self.hop_length = tts_config.get('hop_length', 256)
         
         self._initialize_components()
         logger.info("Speaker manager initialized")

@@ -10,7 +10,7 @@ import torchaudio
 import numpy as np
 import librosa
 import soundfile as sf
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union, Any
 from pathlib import Path
 import logging
 from dataclasses import dataclass
@@ -87,7 +87,8 @@ class AudioProcessor:
         
         self.inverse_mel_transform = torchaudio.transforms.InverseMelScale(
             n_mels=n_mels,
-            sample_rate=sample_rate
+            sample_rate=sample_rate,
+            n_stft=win_length // 2 + 1
         )
         
         self.griffin_lim = torchaudio.transforms.GriffinLim(

@@ -103,7 +103,7 @@ python -c "from src.tts import IndexTTS2Engine; print('长文本TTS就绪')"
 from scripts.inference import CantoneseTranslator
 
 # 处理200+字符长文本
-translator = CantoneseTranslator(model_name="Tencent-Hunyuan/Hunyuan-MT-7B")
+translator = CantoneseTranslator(model_name="Tencent-Hunyuan/Hunyuan-MT-7B-fp8")
 
 long_text = """各位同事，关于下季度的市场推广计划，
 我们需要在保持现有客户满意度的同时，

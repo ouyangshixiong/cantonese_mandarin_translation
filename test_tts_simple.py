@@ -1,31 +1,109 @@
 #!/usr/bin/env python3
 """
-简化版TTS长句测试脚本 - 不依赖GPU和复杂音频处理
-主要用于测试翻译和TTS核心功能
+Real TTS长句测试脚本 - 使用实际的Index-TTS2引擎
+主要用于测试真实的翻译和TTS核心功能，生成真实音频
 """
 import sys
 import time
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional
 import numpy as np
+import torch
+import torchaudio
+
+# 添加项目根目录到Python路径
+project_root = Path(__file__).parent
+sys.path.insert(0, str(project_root))
+
+# 导入真实的TTS模块
+try:
+    from src.tts.index_tts2 import IndexTTS2Engine
+    from src.tts.audio_utils import AudioProcessor, AudioQualityMetrics
+    from omegaconf import DictConfig, OmegaConf
+except ImportError as e:
+    print(f"导入TTS模块失败: {e}")
+    print("请确保已安装所有依赖: pip install -r requirements-cpu.txt 或 requirements-gpu.txt")
+    sys.exit(1)
 
 # 设置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 
-class SimpleLongSentenceTTSValidator:
-    """简化版长句TTS测试验证器"""
+class RealLongSentenceTTSValidator:
+    """真实长句TTS测试验证器 - 使用Index-TTS2引擎"""
     
-    def __init__(self, output_dir: str = "./outputs/tts_long_sentences_simple"):
-        """初始化简化测试器"""
+    def __init__(self, output_dir: str = "./outputs/tts_long_sentences_real", 
+                 config_path: Optional[str] = None):
+        """初始化真实TTS测试器"""
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
+        self.audio_dir = self.output_dir / "audio_files"
+        self.audio_dir.mkdir(exist_ok=True)
         
         self.results = []
-        logger.info("简化版TTS长句测试器初始化完成")
+        self.tts_engine = None
+        self.audio_processor = None
+        
+        # 初始化TTS引擎
+        self._initialize_tts_engine(config_path)
+        
+        logger.info("真实TTS长句测试器初始化完成")
+    
+    def _initialize_tts_engine(self, config_path: Optional[str] = None):
+        """初始化TTS引擎和音频处理器"""
+        try:
+            logger.info("正在初始化Index-TTS2引擎...")
+            
+            # 创建配置（使用默认值或提供的配置文件）
+            if config_path and Path(config_path).exists():
+                config = OmegaConf.load(config_path)
+                logger.info(f"加载配置文件: {config_path}")
+            else:
+                # 使用默认配置
+                config = self._create_default_config()
+                logger.info("使用默认TTS配置")
+            
+            # 初始化TTS引擎
+            self.tts_engine = IndexTTS2Engine(config, device="auto")
+            
+            # 初始化音频处理器
+            self.audio_processor = AudioProcessor(
+                sample_rate=config.tts.get('sample_rate', 22050),
+                n_mels=config.tts.get('n_mels', 80),
+                hop_length=config.tts.get('hop_length', 256),
+                win_length=config.tts.get('win_length', 1024)
+            )
+            
+            logger.info(f"TTS引擎初始化完成 - 设备: {self.tts_engine.device}")
+            logger.info(f"支持的语言: {self.tts_engine.get_supported_languages()}")
+            logger.info(f"支持的情感: {self.tts_engine.get_supported_emotions()}")
+            
+        except Exception as e:
+            logger.error(f"TTS引擎初始化失败: {str(e)}")
+            raise RuntimeError(f"无法初始化TTS引擎: {str(e)}")
+    
+    def _create_default_config(self) -> DictConfig:
+        """创建默认TTS配置"""
+        config_dict = {
+            'tts': {
+                'sample_rate': 22050,
+                'hop_length': 256,
+                'n_mels': 80,
+                'win_length': 1024,
+                'model_paths': {
+                    'yue': './models/index_tts2_yue.pth',
+                    'cmn': './models/index_tts2_cmn.pth'
+                },
+                'vocoder_paths': {
+                    'yue': './models/vocoder_yue.pth',
+                    'cmn': './models/vocoder_cmn.pth'
+                }
+            }
+        }
+        return OmegaConf.create(config_dict)
     
     def get_test_cases(self) -> List[Dict]:
         """获取长句测试用例"""
@@ -64,29 +142,65 @@ class SimpleLongSentenceTTSValidator:
         
         return test_cases
     
-    def simulate_tts_synthesis(self, text: str, language: str, speaker_id: str, emotion: str) -> Dict:
-        """模拟TTS合成（不依赖实际音频库）"""
+    def translate_cantonese_to_mandarin(self, cantonese_text: str) -> str:
+        """简单的粤语到普通话翻译"""
         try:
-            # 模拟合成时间（基于文本长度）
-            char_count = len(text)
-            base_time = 0.1  # 基础时间
-            char_time = 0.01  # 每字符时间
-            synthesis_time = base_time + (char_time * char_count)
+            # 这里可以集成真实的翻译API
+            # 目前使用简单的字符替换作为示例
+            mandarin_text = cantonese_text
             
-            # 模拟音频参数
-            sample_rate = 22050
-            avg_chars_per_second = 12  # 平均语速
-            audio_duration = char_count / avg_chars_per_second
-            audio_samples = int(audio_duration * sample_rate)
+            # 基本字符映射
+            translations = {
+                "咗": "了",
+                "嘅": "的", 
+                "嘢": "东西",
+                "冇": "没有",
+                "唔": "不",
+                "啲": "一些",
+                "咁": "这样",
+                "嚟": "来",
+                "哋": "们",
+                "咁樣": "这样",
+                "鍾意": "喜欢",
+                "朝早": "早上"
+            }
             
-            # 生成模拟音频数据（正弦波+噪声）
-            t = np.linspace(0, audio_duration, audio_samples)
-            frequency = 200 + (hash(text) % 100)  # 基于文本的随机频率
-            audio_array = 0.5 * np.sin(2 * np.pi * frequency * t) + 0.1 * np.random.randn(len(t))
+            for cantonese, mandarin in translations.items():
+                mandarin_text = mandarin_text.replace(cantonese, mandarin)
             
-            # 模拟音频质量
-            snr_db = 25 + (hash(text + speaker_id) % 10)  # 25-35dB
-            quality_score = 0.7 + (hash(text + emotion) % 30) / 100  # 0.7-1.0
+            return mandarin_text
+            
+        except Exception as e:
+            logger.error(f"翻译失败: {str(e)}")
+            return cantonese_text  # 失败时返回原文
+    
+    def real_tts_synthesis(self, text: str, language: str, speaker_id: str, emotion: str) -> Dict:
+        """使用真实TTS引擎进行语音合成"""
+        try:
+            logger.info(f"开始真实TTS合成 - 语言: {language}, 说话人: {speaker_id}, 情感: {emotion}")
+            
+            synthesis_start = time.time()
+            
+            # 使用真实的TTS引擎进行合成
+            audio_array, sample_rate = self.tts_engine.synthesize(
+                text=text,
+                language=language,
+                speaker_id=speaker_id,
+                emotion=emotion,
+                speed=1.0,
+                pitch_shift=0.0
+            )
+            
+            synthesis_time = time.time() - synthesis_start
+            
+            # 计算音频时长
+            audio_duration = len(audio_array) / sample_rate
+            
+            # 使用真实音频质量评估
+            audio_tensor = torch.from_numpy(audio_array).unsqueeze(0).float()
+            quality_metrics = self.audio_processor.assess_quality(audio_tensor, sample_rate)
+            
+            logger.info(f"TTS合成完成 - 时长: {audio_duration:.2f}s, 质量分数: {quality_metrics.overall_score:.2f}")
             
             return {
                 "success": True,
@@ -95,17 +209,57 @@ class SimpleLongSentenceTTSValidator:
                 "synthesis_time": synthesis_time,
                 "audio_duration": audio_duration,
                 "quality_metrics": {
-                    "snr_db": snr_db,
-                    "overall_score": quality_score,
-                    "quality_grade": get_quality_grade(quality_score)
+                    "snr_db": quality_metrics.snr_db,
+                    "overall_score": quality_metrics.overall_score,
+                    "dynamic_range": quality_metrics.dynamic_range,
+                    "clipping_ratio": quality_metrics.clipping_ratio,
+                    "spectral_centroid": quality_metrics.spectral_centroid,
+                    "quality_grade": self._get_quality_grade(quality_metrics.overall_score)
                 }
             }
             
         except Exception as e:
+            logger.error(f"真实TTS合成失败: {str(e)}")
             return {
                 "success": False,
                 "error": str(e)
             }
+    
+    def _get_quality_grade(self, score: float) -> str:
+        """获取质量等级"""
+        if score >= 0.9:
+            return "A+ (优秀)"
+        elif score >= 0.8:
+            return "A (良好)"
+        elif score >= 0.7:
+            return "B (中等)"
+        elif score >= 0.6:
+            return "C (及格)"
+        else:
+            return "F (不及格)"
+    
+    def save_audio_file(self, audio_array: np.ndarray, sample_rate: int, 
+                       filename: str) -> Optional[Path]:
+        """保存音频文件"""
+        try:
+            audio_path = self.audio_dir / filename
+            
+            # 转换为tensor并保存
+            audio_tensor = torch.from_numpy(audio_array).unsqueeze(0).float()
+            success = self.audio_processor.save_audio(
+                audio_tensor, audio_path, sample_rate, format='wav'
+            )
+            
+            if success:
+                logger.info(f"音频文件已保存: {audio_path}")
+                return audio_path
+            else:
+                logger.error(f"音频文件保存失败: {audio_path}")
+                return None
+                
+        except Exception as e:
+            logger.error(f"保存音频文件时出错: {str(e)}")
+            return None
     
     def test_single_sentence(self, test_case: Dict, speaker_id: str, emotion: str) -> Dict:
         """测试单个长句"""
@@ -117,27 +271,21 @@ class SimpleLongSentenceTTSValidator:
         start_time = time.time()
         
         try:
-            # 步骤1: 模拟文本翻译
+            # 步骤1: 文本翻译
             logger.info("📄 开始文本翻译...")
             translation_start = time.time()
             
-            # 模拟翻译（简单的字符替换和转换）
-            mandarin_text = test_case['cantonese']
-            # 模拟一些基本的粤语到普通话转换
-            mandarin_text = mandarin_text.replace("咗", "了")
-            mandarin_text = mandarin_text.replace("嘅", "的")
-            mandarin_text = mandarin_text.replace("嘢", "东西")
-            mandarin_text = mandarin_text.replace("冇", "没有")
-            mandarin_text = mandarin_text.replace("唔", "不")
+            mandarin_text = self.translate_cantonese_to_mandarin(test_case['cantonese'])
             
             translation_time = time.time() - translation_start
             logger.info(f"✅ 翻译完成: {translation_time:.3f}s")
+            logger.info(f"翻译结果: {mandarin_text[:50]}...")
             
-            # 步骤2: 模拟TTS合成
-            logger.info("🎙️ 开始语音合成...")
-            synthesis_result = self.simulate_tts_synthesis(
+            # 步骤2: 真实TTS合成
+            logger.info("🎙️ 开始真实语音合成...")
+            synthesis_result = self.real_tts_synthesis(
                 text=test_case['cantonese'],
-                language="yue",
+                language="yue",  # 粤语
                 speaker_id=speaker_id,
                 emotion=emotion
             )
@@ -147,6 +295,18 @@ class SimpleLongSentenceTTSValidator:
                 logger.info(f"音频长度: {synthesis_result['audio_duration']:.2f}s")
                 logger.info(f"音频质量: {synthesis_result['quality_metrics']['overall_score']:.2f}")
                 logger.info(f"质量等级: {synthesis_result['quality_metrics']['quality_grade']}")
+                
+                # 保存音频文件
+                audio_filename = f"test_{test_case['id']}_{speaker_id}_{emotion}.wav"
+                audio_path = self.save_audio_file(
+                    synthesis_result["audio_array"],
+                    synthesis_result["sample_rate"],
+                    audio_filename
+                )
+                
+                if audio_path:
+                    logger.info(f"🎵 音频文件已保存: {audio_path}")
+                
             else:
                 logger.error(f"❌ 合成失败: {synthesis_result['error']}")
                 return {
@@ -176,6 +336,7 @@ class SimpleLongSentenceTTSValidator:
                 "sample_rate": synthesis_result['sample_rate'],
                 "speaker_id": speaker_id,
                 "emotion": emotion,
+                "audio_file": str(audio_path) if audio_path else None,
                 "success": True,
                 "quality_metrics": synthesis_result['quality_metrics']
             }
@@ -196,12 +357,20 @@ class SimpleLongSentenceTTSValidator:
                 "error": str(e)
             }
     
-    def run_simple_tests(self) -> Dict:
-        """运行简化测试"""
-        logger.info("🚀 开始简化版TTS长句测试...")
+    def run_real_tests(self) -> Dict:
+        """运行真实TTS测试"""
+        logger.info("🚀 开始真实TTS长句测试...")
         
         test_cases = self.get_test_cases()
-        speakers = ["yue_female_001", "yue_male_001", "cmn_female_001", "cmn_male_001"]
+        
+        # 获取可用的说话人（使用真实TTS引擎的说话人）
+        try:
+            yue_speakers = self.tts_engine.get_available_speakers("yue")
+            cmn_speakers = self.tts_engine.get_available_speakers("cmn")
+            speakers = yue_speakers[:2] if yue_speakers else ["yue_female_001", "yue_male_001"]
+        except:
+            speakers = ["yue_female_001", "yue_male_001"]
+        
         emotions = ["neutral", "happy", "sad"]
         
         logger.info(f"测试用例数量: {len(test_cases)}")
@@ -229,13 +398,13 @@ class SimpleLongSentenceTTSValidator:
                         success_count += 1
         
         # 生成报告
-        report = self.generate_simple_report(results, success_count, test_count)
+        report = self.generate_real_report(results, success_count, test_count)
         
         return report
     
-    def generate_simple_report(self, results: List[Dict], success_count: int, total_count: int) -> Dict:
-        """生成简化测试报告"""
-        logger.info("📊 生成简化测试报告...")
+    def generate_real_report(self, results: List[Dict], success_count: int, total_count: int) -> Dict:
+        """生成真实测试报告"""
+        logger.info("📊 生成真实TTS测试报告...")
         
         successful_results = [r for r in results if r["success"]]
         
@@ -244,12 +413,15 @@ class SimpleLongSentenceTTSValidator:
         synthesis_times = [r["synthesis_time"] for r in successful_results]
         total_times = [r["total_time"] for r in successful_results]
         char_counts = [r["char_count"] for r in successful_results]
+        audio_durations = [r["audio_duration"] for r in successful_results]
         
         # 质量统计
         quality_scores = []
+        snr_values = []
         for result in successful_results:
-            if "quality_metrics" in result and "overall_score" in result["quality_metrics"]:
+            if "quality_metrics" in result:
                 quality_scores.append(result["quality_metrics"]["overall_score"])
+                snr_values.append(result["quality_metrics"]["snr_db"])
         
         report = {
             "test_summary": {
@@ -258,7 +430,9 @@ class SimpleLongSentenceTTSValidator:
                 "failed_tests": total_count - success_count,
                 "success_rate": success_count / total_count if total_count > 0 else 0,
                 "test_timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-                "test_type": "简化版TTS长句测试"
+                "test_type": "真实TTS长句测试",
+                "tts_engine": "Index-TTS2",
+                "audio_processor": "AudioProcessor"
             },
             "performance_metrics": {
                 "avg_translation_time": np.mean(translation_times) if translation_times else 0,
@@ -269,28 +443,40 @@ class SimpleLongSentenceTTSValidator:
                 "max_translation_time": max(translation_times) if translation_times else 0,
                 "max_synthesis_time": max(synthesis_times) if synthesis_times else 0,
                 "min_translation_time": min(translation_times) if translation_times else 0,
-                "min_synthesis_time": min(synthesis_times) if synthesis_times else 0
+                "min_synthesis_time": min(synthesis_times) if synthesis_times else 0,
+                "avg_audio_duration": np.mean(audio_durations) if audio_durations else 0,
+                "total_audio_duration": sum(audio_durations) if audio_durations else 0
             },
             "quality_metrics": {
                 "avg_quality_score": np.mean(quality_scores) if quality_scores else 0,
                 "min_quality_score": min(quality_scores) if quality_scores else 0,
                 "max_quality_score": max(quality_scores) if quality_scores else 0,
-                "quality_distribution": self._get_simple_quality_distribution(quality_scores)
+                "avg_snr_db": np.mean(snr_values) if snr_values else 0,
+                "quality_distribution": self._get_real_quality_distribution(quality_scores),
+                "audio_files_saved": len([r for r in successful_results if r.get("audio_file")])
+            },
+            "system_info": {
+                "device": str(self.tts_engine.device) if self.tts_engine else "unknown",
+                "memory_usage": self.tts_engine.get_memory_usage() if self.tts_engine else {},
+                "available_speakers": {
+                    "yue": self.tts_engine.get_available_speakers("yue") if self.tts_engine else [],
+                    "cmn": self.tts_engine.get_available_speakers("cmn") if self.tts_engine else []
+                }
             },
             "detailed_results": results
         }
         
         # 保存报告
-        report_path = self.output_dir / "tts_long_sentences_simple_report.json"
+        report_path = self.output_dir / "tts_long_sentences_real_report.json"
         with open(report_path, 'w', encoding='utf-8') as f:
             json.dump(report, f, indent=2, ensure_ascii=False)
         
-        logger.info(f"简化测试报告已保存: {report_path}")
+        logger.info(f"真实TTS测试报告已保存: {report_path}")
         
         return report
     
-    def _get_simple_quality_distribution(self, quality_scores: List[float]) -> Dict:
-        """获取简化质量分布"""
+    def _get_real_quality_distribution(self, quality_scores: List[float]) -> Dict:
+        """获取真实质量分布"""
         if not quality_scores:
             return {}
         
@@ -314,27 +500,15 @@ class SimpleLongSentenceTTSValidator:
         return ranges
 
 
-def get_quality_grade(score: float) -> str:
-    """获取质量等级"""
-    if score >= 0.9:
-        return "A+ (优秀)"
-    elif score >= 0.8:
-        return "A (良好)"
-    elif score >= 0.7:
-        return "B (中等)"
-    elif score >= 0.6:
-        return "C (及格)"
-    else:
-        return "F (不及格)"
-
-
 def main():
     """主函数"""
     import argparse
     
-    parser = argparse.ArgumentParser(description="简化版TTS长句测试脚本")
-    parser.add_argument("--output", type=str, default="./outputs/tts_long_sentences_simple",
+    parser = argparse.ArgumentParser(description="真实TTS长句测试脚本 - 使用Index-TTS2引擎")
+    parser.add_argument("--output", type=str, default="./outputs/tts_long_sentences_real",
                        help="输出目录")
+    parser.add_argument("--config", type=str, default=None,
+                       help="TTS配置文件路径")
     parser.add_argument("--verbose", action="store_true",
                        help="详细输出")
     
@@ -346,15 +520,18 @@ def main():
     
     try:
         # 初始化测试器
-        logger.info("🚀 开始简化版TTS长句测试...")
-        validator = SimpleLongSentenceTTSValidator(output_dir=args.output)
+        logger.info("🚀 开始真实TTS长句测试...")
+        validator = RealLongSentenceTTSValidator(
+            output_dir=args.output,
+            config_path=args.config
+        )
         
         # 运行测试
-        report = validator.run_simple_tests()
+        report = validator.run_real_tests()
         
         # 打印总结
         print("\n" + "="*80)
-        print("📊 简化版TTS长句测试完成报告")
+        print("📊 真实TTS长句测试完成报告")
         print("="*80)
         print(f"总测试数量: {report['test_summary']['total_tests']}")
         print(f"成功测试: {report['test_summary']['successful_tests']}")
@@ -363,14 +540,19 @@ def main():
         print(f"平均翻译时间: {report['performance_metrics']['avg_translation_time']:.3f}秒")
         print(f"平均合成时间: {report['performance_metrics']['avg_synthesis_time']:.3f}秒")
         print(f"平均音频质量: {report['quality_metrics']['avg_quality_score']:.2f}")
+        print(f"平均SNR: {report['quality_metrics']['avg_snr_db']:.1f}dB")
+        print(f"总音频时长: {report['performance_metrics']['total_audio_duration']:.1f}秒")
+        print(f"音频文件保存: {report['quality_metrics']['audio_files_saved']}个")
+        print(f"TTS引擎: {report['system_info']['device']}")
         print("="*80)
         
         # 根据成功率判断测试是否通过
         if report['test_summary']['success_rate'] >= 0.8:
-            print("✅ 简化版TTS长句测试 PASSED")
+            print("✅ 真实TTS长句测试 PASSED")
+            print(f"🎵 音频文件已保存至: {args.output}/audio_files/")
             return 0
         else:
-            print("❌ 简化版TTS长句测试 FAILED")
+            print("❌ 真实TTS长句测试 FAILED")
             return 1
             
     except Exception as e:
