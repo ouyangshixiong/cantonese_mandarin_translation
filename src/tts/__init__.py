@@ -1,21 +1,19 @@
 """
-Index-TTS2 Integration Module for Cantonese-Mandarin Translation System
+XTTS-v2 Integration Module for Cantonese-Mandarin-English Translation System
 
-This module provides advanced text-to-speech synthesis capabilities using Index-TTS2,
+This module provides advanced text-to-speech synthesis capabilities using Coqui/XTTS-v2,
 supporting bidirectional voice translation with speaker preservation and cross-lingual
-voice conversion.
+voice conversion. Supports Cantonese, Mandarin, and English languages.
 """
 
-from .index_tts2 import IndexTTS2Engine
-from .voice_converter import CrossLingualVoiceConverter
+from .xtts_v2_engine import XTTSV2Engine
 from .prosody import ProsodyController
 from .speaker_manager import SpeakerManager
 from .audio_utils import AudioProcessor
 
-__version__ = "2.0.0"
+__version__ = "3.0.0"
 __all__ = [
-    "IndexTTS2Engine",
-    "CrossLingualVoiceConverter", 
+    "XTTSV2Engine",
     "ProsodyController",
     "SpeakerManager",
     "AudioProcessor"

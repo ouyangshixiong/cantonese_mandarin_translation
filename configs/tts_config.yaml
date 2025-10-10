@@ -1,4 +1,4 @@
-# Index-TTS2 specific configuration
+# XTTS-v2 specific configuration
 # This file contains detailed TTS settings for both Cantonese and Mandarin
 
 tts:
@@ -16,61 +16,43 @@ tts:
     ref_level_db: 20
     max_norm: 0.95
   
-  # Model architecture
+  # XTTS-v2 Model architecture
   model:
-    # Encoder settings
-    encoder:
-      hidden_dim: 512
-      num_layers: 4
-      dropout: 0.1
-      attention_heads: 8
-    
-    # Decoder settings
-    decoder:
-      hidden_dim: 512
-      num_layers: 4
-      dropout: 0.1
-      attention_heads: 8
-      mel_channels: 80
-    
+    # XTTS-v2 specific settings
+    xtts_v2:
+      model_name: "tts_models/multilingual/multi-dataset/xtts_v2"
+      use_cuda: true
+      progress_bar: false
+      
     # Speaker embedding
     speaker:
       embedding_dim: 256
-      num_speakers: 100
       use_speaker_embedding: true
-    
+      voice_cloning: true
+      
     # Language-specific settings
     language:
       yue:  # Cantonese
-        phoneme_dim: 256
-        tone_dim: 64
-        use_tone_embedding: true
-        tone_types: 6  # 6 main tones in Cantonese
+        language_code: "zh-cn"
+        use_phonemizer: false
       
       cmn:  # Mandarin
-        phoneme_dim: 256
-        tone_dim: 64
-        use_tone_embedding: true
-        tone_types: 5  # 4 main tones + neutral
+        language_code: "zh-cn"
+        use_phonemizer: false
+      
+      en:   # English
+        language_code: "en"
+        use_phonemizer: true
   
-  # Vocoder settings
+  # XTTS-v2 Vocoder (built-in)
   vocoder:
-    type: "hifigan"  # hifigan, melgan, parallel_wavegan
-    checkpoint_path: null
-    
-    # HiFi-GAN specific
-    hifigan:
-      resblock: "1"
-      num_gpus: 0
-      batch_size: 1
-      segment_size: 8192
-      num_mels: 80
-      hop_size: 256
-      win_size: 1024
-      sampling_rate: 22050
-      fmin: 80
-      fmax: 8000
-      fmax_for_loss: null
+    type: "xtts_v2_builtin"
+    sample_rate: 22050
+    hop_length: 256
+    win_length: 1024
+    n_mels: 80
+    fmin: 80
+    fmax: 8000
   
   # Training settings
   training:
@@ -108,31 +90,18 @@ tts:
     chunk_size: 50  # characters
     overlap_size: 10  # characters
   
-  # Voice conversion
+  # Voice conversion (XTTS-v2 built-in)
   voice_conversion:
     enabled: true
-    model_type: "autoencoder"  # autoencoder, gan, diffusion
+    model_type: "xtts_v2_builtin"
+    speaker_similarity_threshold: 0.85
     
-    # Content encoder
-    content_encoder:
-      hidden_dim: 512
-      num_layers: 6
-      kernel_size: 5
-      dropout: 0.1
-    
-    # Speaker encoder
-    speaker_encoder:
-      embedding_dim: 256
-      hidden_dim: 512
-      num_layers: 4
-      dropout: 0.1
-    
-    # Decoder
-    decoder:
-      hidden_dim: 512
-      num_layers: 6
-      kernel_size: 5
-      dropout: 0.1
+    # XTTS-v2 voice cloning
+    voice_cloning:
+      enabled: true
+      min_reference_duration: 3.0  # seconds
+      max_reference_duration: 10.0  # seconds
+      similarity_threshold: 0.8
   
   # Prosody control
   prosody:
@@ -204,13 +173,18 @@ tts:
       expand_abbreviations: true
       convert_numbers: true
     
-    # Phonemization
-    phonemization:
+    # Text preprocessing
+    text_preprocessing:
       enabled: true
-      backend: "espeak"  # espeak, festival, segments
-      language_map:
-        yue: "yue"  # Cantonese
-        cmn: "cmn"  # Mandarin
+      lowercase: false
+      remove_punctuation: false
+      expand_abbreviations: true
+      
+    # Language mapping for XTTS-v2
+    language_mapping:
+      yue: "zh-cn"  # Cantonese mapped to Chinese
+      cmn: "zh-cn"  # Mandarin
+      en: "en"      # English
     
     # Audio preprocessing
     audio_preprocessing:

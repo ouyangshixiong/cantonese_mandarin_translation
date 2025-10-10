@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Enhanced Inference script with Index-TTS2 integration for Cantonese-Mandarin translation
+Enhanced Inference script with XTTS-v2 integration for Cantonese-Mandarin translation
 Supports text translation with speech synthesis, voice cloning, and cross-lingual voice conversion
 """
 import logging
@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from inference.translator import CantoneseTranslator
 from inference.utils import parse_args, setup_logging, check_framework_availability
 from inference.cli import interactive_mode, batch_translate_file, handle_single_translation, show_model_info
-from tts import IndexTTS2Engine, CrossLingualVoiceConverter, SpeakerManager, AudioProcessor
+from tts import XTTSV2Engine
 from omegaconf import OmegaConf
 
 logger = logging.getLogger(__name__)
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 class VoiceTranslationSystem:
     """
-    Enhanced translation system with Index-TTS2 speech synthesis capabilities.
+    Enhanced translation system with XTTS-v2 speech synthesis capabilities.
     Supports bidirectional translation with voice output and cross-lingual voice conversion.
     """
     
@@ -43,9 +43,6 @@ class VoiceTranslationSystem:
         # Initialize components
         self.translator = None
         self.tts_engine = None
-        self.voice_converter = None
-        self.speaker_manager = None
-        self.audio_processor = None
         
         self._initialize_components()
         logger.info("Voice translation system initialized")
@@ -75,25 +72,8 @@ class VoiceTranslationSystem:
             
             # Initialize TTS engine if enabled
             if hasattr(self.config, 'tts') and self.config.tts.enabled:
-                logger.info("Initializing Index-TTS2 engine...")
-                self.tts_engine = IndexTTS2Engine(self.config, str(self.device))
-                
-                # Initialize voice converter
-                logger.info("Initializing voice converter...")
-                self.voice_converter = CrossLingualVoiceConverter(self.config, str(self.device))
-                
-                # Initialize speaker manager
-                logger.info("Initializing speaker manager...")
-                self.speaker_manager = SpeakerManager(self.config, str(self.device))
-                
-                # Initialize audio processor
-                logger.info("Initializing audio processor...")
-                self.audio_processor = AudioProcessor(
-                    sample_rate=self.config.tts.sample_rate,
-                    n_mels=self.config.tts.n_mels,
-                    hop_length=self.config.tts.hop_length,
-                    win_length=self.config.tts.win_length
-                )
+                logger.info("Initializing XTTS-v2 engine...")
+                self.tts_engine = XTTSV2Engine(self.config, str(self.device))
             
         except Exception as e:
             logger.error(f"Failed to initialize components: {str(e)}")
@@ -104,7 +84,7 @@ class VoiceTranslationSystem:
                            speed: float = 1.0, pitch_shift: float = 0.0,
                            preserve_voice: bool = False) -> Tuple[str, Optional[np.ndarray], int]:
         """
-        Translate text and synthesize speech with Index-TTS2.
+        Translate text and synthesize speech with XTTS-v2.
         
         Args:
             text: Input text to translate
@@ -135,34 +115,21 @@ class VoiceTranslationSystem:
                 # Determine language for TTS
                 tts_language = self._get_tts_language(target_lang)
                 
-                # Get speaker embedding
-                speaker_embedding = self.speaker_manager.get_speaker_embedding(speaker_id)
-                if speaker_embedding is None:
-                    # Use default speaker if not found
-                    default_speaker = (self.config.tts.default_speaker_yue if tts_language == 'yue'
-                                     else self.config.tts.default_speaker_cmn)
-                    speaker_id = default_speaker
-                    logger.warning(f"Speaker {speaker_id} not found, using default: {default_speaker}")
+                # XTTS-v2 handles speaker management internally
+                # Just pass the speaker_id directly
                 
-                # Handle cross-lingual voice preservation
-                if preserve_voice and source_lang != target_lang:
-                    audio_array, sample_rate = self._synthesize_with_voice_preservation(
-                        translated_text, text, source_lang, target_lang, speaker_id,
-                        emotion, speed, pitch_shift
-                    )
-                else:
-                    # Standard TTS synthesis
-                    start_time = time.time()
-                    audio_array, sample_rate = self.tts_engine.synthesize(
-                        text=translated_text,
-                        language=tts_language,
-                        speaker_id=speaker_id,
-                        emotion=emotion,
-                        speed=speed,
-                        pitch_shift=pitch_shift
-                    )
-                    synthesis_time = time.time() - start_time
-                    logger.info(f"TTS synthesis completed in {synthesis_time:.3f}s")
+                # XTTS-v2 handles voice preservation automatically
+                start_time = time.time()
+                audio_array, sample_rate = self.tts_engine.synthesize(
+                    text=translated_text,
+                    language=tts_language,
+                    speaker_id=speaker_id,
+                    emotion=emotion,
+                    speed=speed,
+                    pitch_shift=pitch_shift
+                )
+                synthesis_time = time.time() - start_time
+                logger.info(f"TTS synthesis completed in {synthesis_time:.3f}s")
             
             return translated_text, audio_array, sample_rate
             
@@ -174,68 +141,11 @@ class VoiceTranslationSystem:
         """Convert language name to TTS language code."""
         lang_map = {
             "cantonese": "yue",
-            "mandarin": "cmn"
+            "mandarin": "cmn",
+            "english": "en"
         }
         return lang_map.get(lang, "cmn")
     
-    def _synthesize_with_voice_preservation(self, translated_text: str, original_text: str,
-                                          source_lang: str, target_lang: str,
-                                          speaker_id: str, emotion: str, speed: float,
-                                          pitch_shift: float) -> Tuple[np.ndarray, int]:
-        """
-        Synthesize speech with cross-lingual voice preservation.
-        
-        Args:
-            translated_text: Translated text
-            original_text: Original source text
-            source_lang: Source language
-            target_lang: Target language
-            speaker_id: Speaker ID
-            emotion: Emotion for synthesis
-            speed: Speech speed
-            pitch_shift: Pitch shift
-            
-        Returns:
-            Tuple of (audio_array, sample_rate)
-        """
-        try:
-            logger.info(f"Performing cross-lingual voice preservation: {source_lang} → {target_lang}")
-            
-            # First synthesize original speech
-            source_tts_lang = self._get_tts_language(source_lang)
-            original_audio, sr = self.tts_engine.synthesize(
-                text=original_text,
-                language=source_tts_lang,
-                speaker_id=speaker_id,
-                emotion=emotion,
-                speed=speed,
-                pitch_shift=pitch_shift
-            )
-            
-            # Perform voice conversion to target language
-            target_tts_lang = self._get_tts_language(target_lang)
-            converted_audio = self.voice_converter.convert_voice(
-                source_audio=original_audio,
-                source_language=source_tts_lang,
-                target_language=target_tts_lang,
-                reference_speaker=None  # Use same speaker characteristics
-            )
-            
-            logger.info("Cross-lingual voice conversion completed")
-            return converted_audio, sr
-            
-        except Exception as e:
-            logger.error(f"Voice preservation failed: {str(e)}")
-            # Fallback to standard TTS
-            target_tts_lang = self._get_tts_language(target_lang)
-            return self.tts_engine.synthesize(
-                text=translated_text,
-                language=target_tts_lang,
-                speaker_id=speaker_id,
-                emotion=emotion,
-                speed=speed,
-                pitch_shift=pitch_shift
-            )
     
     def save_audio(self, audio_array: np.ndarray, sample_rate: int, 
                    output_path: str, audio_format: str = "wav") -> str:
@@ -259,19 +169,11 @@ class VoiceTranslationSystem:
             if audio_tensor.dim() == 1:
                 audio_tensor = audio_tensor.unsqueeze(0)
             
-            # Save audio
-            success = self.audio_processor.save_audio(
-                audio=audio_tensor,
-                filepath=output_path,
-                sample_rate=sample_rate,
-                format=audio_format
-            )
+            # Save audio using torchaudio
+            torchaudio.save(output_path, audio_tensor, sample_rate)
             
-            if success:
-                logger.info(f"Audio saved to: {output_path}")
-                return output_path
-            else:
-                raise RuntimeError("Failed to save audio")
+            logger.info(f"Audio saved to: {output_path}")
+            return output_path
                 
         except Exception as e:
             logger.error(f"Audio saving failed: {str(e)}")
@@ -279,11 +181,10 @@ class VoiceTranslationSystem:
     
     def get_available_speakers(self, language: str) -> list:
         """Get available speakers for a language."""
-        if not self.speaker_manager:
+        if not self.tts_engine:
             return []
         
-        speakers = self.speaker_manager.list_speakers(language=language)
-        return [s.speaker_id for s in speakers]
+        return self.tts_engine.get_available_speakers(language)
     
     def get_model_info(self) -> dict:
         """Get system information."""
@@ -298,7 +199,8 @@ class VoiceTranslationSystem:
             info.update({
                 "available_speakers_yue": self.get_available_speakers("yue"),
                 "available_speakers_cmn": self.get_available_speakers("cmn"),
-                "supported_emotions": self.config.tts.prosody.emotions,
+                "available_speakers_en": self.get_available_speakers("en"),
+                "supported_emotions": self.tts_engine.get_supported_emotions() if self.tts_engine else [],
                 "sample_rate": self.config.tts.sample_rate
             })
         
@@ -397,7 +299,12 @@ def interactive_voice_mode(voice_system: VoiceTranslationSystem):
                     continue
                 
                 # Auto-select speaker if not set
-                tts_lang = "yue" if current_target == "cantonese" else "cmn"
+                tts_lang_map = {
+                    "cantonese": "yue",
+                    "mandarin": "cmn", 
+                    "english": "en"
+                }
+                tts_lang = tts_lang_map.get(current_target, "cmn")
                 if current_speaker is None:
                     available_speakers = voice_system.get_available_speakers(tts_lang)
                     if available_speakers:
@@ -427,8 +334,10 @@ def interactive_voice_mode(voice_system: VoiceTranslationSystem):
                 if voice_system.tts_engine:
                     yue_speakers = voice_system.get_available_speakers("yue")
                     cmn_speakers = voice_system.get_available_speakers("cmn")
+                    en_speakers = voice_system.get_available_speakers("en")
                     print(f"Cantonese speakers: {yue_speakers}")
                     print(f"Mandarin speakers: {cmn_speakers}")
+                    print(f"English speakers: {en_speakers}")
                 else:
                     print("TTS not available")
                     

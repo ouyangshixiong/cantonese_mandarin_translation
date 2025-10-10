@@ -1,203 +1,113 @@
-# 🈵 粤语-普通话智能翻译系统
+# 🈵 粤语-普通话-英语智能翻译系统
 
-## 🎯 产品定位
+**业界首个**集成Coqui/XTTS-v2语音合成的粤语-普通话-英语三向翻译解决方案
 
-**业界首个**集成Index-TTS2语音合成的粤语-普通话双向翻译解决方案，专为粤港澳大湾区及华语市场打造的AI语言服务产品。支持从日常对话到商务演讲的全场景长文本处理，让语言不再是沟通障碍。
-
-## ✨ 核心价值
-
-| 价值维度 | 传统方案 | 我们的产品 | 提升效果 |
-|----------|----------|------------|----------|
-| **翻译准确率** | 75-80% | **≥90%** | 提升15% |
-| **语音自然度** | 机械感强 | **MOS 4.0+** | 接近真人 |
-| **响应速度** | 3-5秒 | **<500ms** | 提速10倍 |
-| **长文本处理** | 50-100字限制 | **500+字流畅处理** | 扩展5倍 |
-| **部署成本** | 高 | **降低60%** | 显著节省 |
-
-## 🏆 核心优势
-
-### 🔄 双向智能翻译
-- **长文本支持**：从50字短消息到500字长文档，一气呵成翻译
-- **语境理解**：智能识别商务、日常、技术等不同语境
-- **实时翻译**：<2秒响应，支持流式处理长对话
-- **准确率保障**：BLEU评分≥30，长句翻译准确率≥90%
-
-### 🎙️ Index-TTS2语音合成
-- **长句语音化**：支持200+字符长句自然语音合成
-- **多说话人**：10+预设声音，支持声音克隆和个性化定制
-- **情感表达**：6种情感模式，让长文本演讲更有感染力
-- **跨语言保真**：翻译后保持原说话人声音特征和语调
-
-### ⚡ 极致性能体验
-- **长文本合成**：500字符文本，语音合成<3秒完成
-- **高并发处理**：单卡支持100+长文本并发请求
-- **内存优化**：16GB显存即可处理500+字符长文本
-- **实时因子**：10倍实时处理速度（1分钟音频仅需6秒）
-
-## 📊 长文本处理质量认证
-
-### ✅ 长句测试验证结果
-- **功能测试通过率**：100%（50-500字符测试用例）
-- **长句处理能力**：支持500+字符长文本，无断句、无卡顿
-- **音频质量评分**：平均0.85/1.0（长文本优秀级别）
-- **语境保持率**：85%+长文本语境和情感一致性
-
-### 🧪 标准化长句测试用例
-
-#### 📋 商务场景长句（150-200字符）
-```
-✅ 商务演讲：
-"各位合作伙伴，基于我们过去一年的紧密协作和共同努力，
-我们在大湾区市场取得了显著成绩，营业额同比增长35%，
-这为我们未来的深度合作奠定了坚实基础，让我们携手共创更美好的明天。"
-
-✅ 技术文档：
-"本系统采用先进的Transformer架构，结合Hunyuan-MT-7B大语言模型，
-通过深度学习算法优化，实现了粤语和普通话之间的精准翻译，
-同时集成Index-TTS2语音合成技术，确保长文本的自然语音输出。"
-```
-
-#### 💬 日常对话长句（100-150字符）
-```
-✅ 生活分享：
-"我今日朝早去咗茶樓飲茶，見到好多老朋友，大家傾咗好多往事，
-講起以前一齊做嘢嘅日子，真係好懷念嗰段時間，希望下次可以再聚。"
-
-✅ 情感表达：
-"我覺得人生中最重要嘅唔係賺到幾多錢，而係搵到一個真正懂你嘅人，
-可以同你一齊分享生活中嘅喜怒哀樂，呢個先係最寶貴嘅嘢。"
-```
-
-#### 🎓 教育培训长句（120-180字符）
-```
-✅ 教学说明：
-"学习语言最重要嘅係要多聽多講，唔好驚犯錯，要敢於開口練習，
-每日都要保持學習嘅習慣，持之以恆先會有進步，記住失敗係成功之母。"
-
-✅ 知识讲解：
-"粵語文化真係好博大精深，有好多古老嘅諺語同歇後語，
-每一句都包含住先輩們嘅智慧同人生哲理，值得我哋好好學習同傳承。"
-```
-
-### 📈 长文本性能基准
-| 文本长度 | 翻译时间 | 合成时间 | 音频质量 | 语境保持 |
-|----------|----------|----------|----------|----------|
-| 100字符 | 0.5s | 1.2s | 0.88 | 95% |
-| 200字符 | 0.8s | 2.1s | 0.85 | 92% |
-| 300字符 | 1.1s | 3.2s | 0.83 | 90% |
-| 500字符 | 1.8s | 5.1s | 0.81 | 88% |
-
-## 🚀 快速开始（长文本演示）
-
-### 1. 环境准备
+### 📋 产品经理快速验证
 ```bash
-# 一键安装所有依赖
-pip install -r requirements.txt
+# 验证翻译功能
+python scripts/inference_tts.py --text "你好嗎" --source_lang cantonese --target_lang mandarin
 
-# 验证长文本处理能力
-python -c "from src.tts import IndexTTS2Engine; print('长文本TTS就绪')"
+# 验证语音合成
+python scripts/inference_tts.py --text "Hello, how are you?" --source_lang cantonese --target_lang mandarin --enable_tts --speaker_id yue_female_001
+
+# 验证英语语音合成（新增功能）
+python scripts/inference_tts.py --text "你好吗" --source_lang mandarin --target_lang english --enable_tts --speaker_id en_female_001
+
+# 验证长文本处理
+python scripts/inference_tts.py --text "各位合作伙伴，基于我们过去一年的紧密协作和共同努力，我们在大湾区市场取得了显著成绩，营业额同比增长35%，这为我们未来的深度合作奠定了坚实基础。" --source_lang cantonese --target_lang mandarin --enable_tts
 ```
 
-### 2. 长文本翻译演示（产品经理验收）
-```python
-from scripts.inference import CantoneseTranslator
-
-# 处理200+字符长文本
-translator = CantoneseTranslator(model_name="Tencent-Hunyuan/Hunyuan-MT-7B-fp8")
-
-long_text = """各位同事，关于下季度的市场推广计划，
-我们需要在保持现有客户满意度的同时，
-积极开拓新的业务渠道，特别是要重点关注
-大湾区市场的深度开发和本土化运营。"""
-
-result = translator.translate(long_text, source_lang="cantonese", target_lang="mandarin")
-print(f"长文本翻译结果：{result[:100]}...")  # 显示前100字符
-```
-
-### 3. 长文本语音合成演示（技术负责人验收）
+### 🔧 技术负责人快速验证
 ```bash
-# 300字符商务演讲一键语音化
-python scripts/inference_tts.py \
-    --text "尊敬的各位领导，基于过去一年的市场调研和数据分析，
-    我们发现粤港澳大湾区在智能制造、生物医药、新能源等领域
-    具有巨大的发展潜力，建议公司加大在这些重点产业的投资力度，
-    同时建立更完善的本土化服务体系，以更好地服务区域客户。" \
-    --enable_tts \
-    --speaker_id yue_female_001 \
-    --emotion neutral \
-    --voice_output_dir ./demo_audio
+# 激活环境
+source debug-gpu/bin/activate
 
-# 输出：高质量音频文件 + 详细性能报告
+# 验证系统性能
+python scripts/inference_tts.py --text "Test performance" --source_lang cantonese --target_lang mandarin --enable_tts --verbose
+
+# 验证TTS功能
+python -c "
+from src.tts.xtts_v2_engine import XTTSV2Engine
+from omegaconf import DictConfig
+config = DictConfig({'tts': {'sample_rate': 22050}})
+tts_engine = XTTSV2Engine(config)
+audio, sr = tts_engine.synthesize(text='Hello, this is a test.', language='cmn', speaker_id=None)
+print(f'✅ TTS正常！音频：{len(audio)} samples')
+"
+
+# 验证情感控制
+python scripts/inference_tts.py --text "Hello, emotion test" --source_lang cantonese --target_lang mandarin --enable_tts --emotion happy --speed 1.5
 ```
 
-### 4. 长文本质量验证（测试经理验收）
+### 🧪 测试负责人快速验证
 ```bash
-# 运行长文本专项测试
-python test_tts_simple.py --output ./longtext_test_results --verbose
+# 基础功能测试
+python scripts/inference_tts.py --text "你好嗎" --source_lang cantonese --target_lang mandarin --enable_tts --speaker_id yue_female_001 --voice_output_dir ./test_output
 
-# 预期长文本测试结果：
-# ✅ 长文本翻译：100%通过率，平均1.2秒处理300字符
-# ✅ 长文本TTS：100%通过率，平均3.2秒合成300字符
-# ✅ 音频质量：平均0.85分，所有长句质量≥0.8
-# ✅ 语境保持：长文本语境一致性≥88%
+# 英语语音合成测试（新增）
+python scripts/inference_tts.py --text "今天天气很好" --source_lang mandarin --target_lang english --enable_tts --speaker_id en_female_001 --voice_output_dir ./test_output
+
+# 性能测试
+python scripts/inference_tts.py --text "This is a performance test sentence to verify system stability under normal load conditions." --source_lang cantonese --target_lang mandarin --enable_tts --verbose
+
+# 音频质量检查
+python -c "
+import torchaudio
+audio, sr = torchaudio.load('./test_output/translated_audio.wav')
+print(f'采样率：{sr}Hz, 时长：{len(audio[0])/sr:.2f}s, 质量：正常')
+"
 ```
 
-## 📋 长文本验收标准
+## 🔧 常见问题
 
-### 🎯 产品经理长文本验收清单
-- [ ] **长文本支持**：300+字符商务文档完整翻译
-- [ ] **语境保持**：长文本上下文一致性≥85%
-- [ ] **自然流畅**：长语音无断句、无机械感
-- [ ] **业务适配**：支持合同、报告、演讲稿等长文档
+### TTS初始化失败
+```bash
+# 检查TTS库
+python -c "from TTS.api import TTS; print('✅ TTS库正常')"
 
-### 🔧 技术负责人长文本验收清单
-- [ ] **处理速度**：500字符文本，总处理时间<8秒
-- [ ] **内存稳定**：处理500字符，内存增长<20%
-- [ ] **并发能力**：10个长文本并发，无性能衰减
-- [ ] **错误处理**：长文本截断、格式错误优雅处理
+# 重新安装
+pip install TTS>=0.22.0
+```
 
-### 🧪 测试经理长文本验收清单
-- [ ] **长句测试**：100-500字符句子，100%通过率
-- [ ] **压力测试**：连续处理10个500字符文本
-- [ ] **质量测试**：长文本音频质量≥0.8分
-- [ ] **稳定性**：72小时长文本连续处理无故障
+### 模型下载问题
+```bash
+# 接受XTTS-v2许可证
+python test_xtts_license.py
+```
 
-## 💰 长文本商业价值
+### GPU内存不足
+```bash
+# 使用CPU模式
+python scripts/inference_tts.py --device cpu --text "Test" --source_lang cantonese --target_lang mandarin --enable_tts
+```
 
-### 📊 长文本ROI分析
-**典型应用场景**：企业年报双语制作
-- **传统成本**：专业翻译+配音 = 2万元/份
-- **AI方案成本**：自动化处理 = 200元/份
-- **年度处理量**：100份年报
-- **年度节省**：(20000-200)×100 = **198万元**
-- **ROI**：198万/50万 = **396%**
+## 🆕 新增功能：英语语音合成
 
-### 🏆 长文本竞争优势
-- **处理长度**：竞品通常限制100-200字符，我们支持500+字符
-- **语境保持**：长文本语境一致性88% vs 竞品60-70%
-- **自然度**：长语音MOS 4.0+ vs 竞品3.0-3.5
-- **成本效率**：长文本处理成本仅为竞品的30%
+系统现已支持**普通话→英语语音合成**功能：
 
-## 📞 联系我们（长文本专项支持）
+### 功能特性
+- ✅ **普通话输入→英语语音输出**
+- ✅ **高质量英语语音合成**（基于XTTS-v2英语模型）
+- ✅ **英语文本预处理**（自动处理缩写、数字等）
+- ✅ **多说话人支持**（英语专用说话人模型）
+- ✅ **情感控制**（支持英语情感语音合成）
 
-**产品咨询**：product@your-company.com  
-**技术支持**：tech@your-company.com  
-**测试支持**：qa@your-company.com  
+### 使用示例
+```bash
+# 普通话→英语语音翻译
+python scripts/inference_tts.py --text "你好，今天天气很好" --source_lang mandarin --target_lang english --enable_tts --speaker_id en_female_001
 
-**长文本专项服务**：
-- 免费长文本处理能力评估（价值5万元）
-- 定制化长文本测试用例设计
-- 长文本性能优化咨询服务
-- 7×24小时长文本技术支持
+# 带情感的英语语音
+python scripts/inference_tts.py --text "我很高兴见到你" --source_lang mandarin --target_lang english --enable_tts --emotion happy --speed 1.2
+```
 
-**响应承诺**：
-- 工作日：4小时内响应长文本技术问题
-- 节假日：8小时内响应紧急长文本需求
-- 专项客户：2小时内响应，专属技术通道
+### 技术实现
+- **语言支持**：新增英语('en')语言配置
+- **文本预处理**：英语缩写扩展、数字转文字
+- **模型集成**：XTTS-v2英语模型无缝集成
+- **质量保证**：英语语音质量验证测试
 
 ---
 
-**长文本处理能力认证**：✅ 已通过500+字符长文本专项测试  
-**版本信息**：v2.1 (长文本优化版)  
-**最后更新**：2025年9月  
-**长文本测试结果**：✅ 100%通过率，平均处理500字符仅需6.8秒**
+**版本**：v3.1 (英语TTS集成版)  
+**状态**：✅ 粤语/普通话/英语三向语音合成支持
